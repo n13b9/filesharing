@@ -9,7 +9,7 @@ const nodemailer = require('nodemailer');
 const responseFunction = require('../utils/responseFunction');
 const fs = require('fs')
 //const errorHandler = require('../middlewares/error.middleware');
-//const authTokenHandler = require('../middlewares/checkAuthToken');
+const authTokenHandler = require('../middleware/checkAuthToken');
 const sendMail = require('../utils/mailer')
 const upload = require('../middleware/multer.middleware')
 
@@ -89,10 +89,56 @@ router.post('/register',fileUploadFunction, async(req,res,next)=>{
 
 router.post('/login',async(req,res,next)=>{
     try {
+
+    const {email,password} = req.body;
+    const user = await User.findOne({email:email});
+    if(!user) {
+        return responseFunction(res, 400, 'Invalid credentials..', null, false);
+    }
+    const isMatch = await bcrypt.compare(password,user.password);
+    if(!isMatch) {
+        return responseFunction(res, 400, 'Invalid credentials', null, false);
+    }
+
+    const authToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: '10m' })
+    const refreshToken = jwt.sign({ userId: user._id }, process.env.JWT_REFRESH_SECRET_KEY, { expiresIn: '50m' });
+
+    res.cookie('authToken',authToken,{
+        sameSite: 'none',
+            httpOnly: true,
+            secure: true
+    })
+    res.cookie('refreshToken', refreshToken, {
+        sameSite: 'none',
+        httpOnly: true,
+        secure: true
+    });
+    return responseFunction(res, 200, 'Logged in successfully', {
+        authToken: authToken,
+        refreshToken: refreshToken
+    }, true);
+
         
     } catch (error) {
-        
+        next(err)
     }
+})
+
+router.get('/checklogin',authTokenHandler, async(req,res,next)=>{
+    res.json({
+        ok:req.ok,
+        message:req.message,
+        userId:req.userId
+    })
+});
+
+router.post('./',authTokenHandler,async(req,res,next)=>{
+    res.clearCookie('authToken');
+    res.clearCookie('resfreshToken');
+    res.json({
+        ok:true,
+        message:'logout successful'
+    })
 })
 
 module.exports = router;
