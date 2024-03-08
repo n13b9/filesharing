@@ -6,7 +6,7 @@ function checkAuthHandler(req,res,next){
     const refreshToken = req.cookies.refreshToken;
 
     if(!authToken || !refreshToken){
-        return res.status(401).json({ message: 'Authentication failed: No authToken or refreshToken provided', ok: false });
+        return res.status(401).json({ message: 'Authentication failed..: No authToken or refreshToken provided', ok: false });
     }
 
     jwt.verify(authToken,process.env.JWT_SECRET_KEY,(err,decoded)=>{

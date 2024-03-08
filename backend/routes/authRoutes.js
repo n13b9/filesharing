@@ -25,7 +25,6 @@ const fileUploadFunction = (req,res,next) => {
         })
 }
 
-
 router.post('/sendotp', async (req,res)=>{
 
    const {email} = req.body; 
@@ -132,7 +131,7 @@ router.get('/checklogin',authTokenHandler, async(req,res,next)=>{
     })
 });
 
-router.post('./',authTokenHandler,async(req,res,next)=>{
+router.post('/logout',authTokenHandler,async(req,res,next)=>{
     res.clearCookie('authToken');
     res.clearCookie('resfreshToken');
     res.json({
@@ -140,5 +139,20 @@ router.post('./',authTokenHandler,async(req,res,next)=>{
         message:'logout successful'
     })
 })
+
+
+router.get('/getuser',authTokenHandler,async(req,res,next)=>{
+    try {
+        const user = await User.findById(req.userId);
+        if(!user){
+            return responseFunction(res, 400, 'user not found', null, false);
+        }
+        return responseFunction(res, 200, 'User Found!', user, true);
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+// router.use(errorHandler)
 
 module.exports = router;
