@@ -44,7 +44,7 @@ const page = () => {
         return
     }
 
-    await axios.post('http://localhost:8000/auth/login',{
+    await axios.post(process.env.NEXT_PUBLIC_API_URL + '/auth/login',{
           email:formData.email,
           password:formData.password
     },
@@ -63,7 +63,7 @@ const page = () => {
 
   const getUserData = async ()=>{
 
-    let res = await axios.get('http://localhost:8000/auth/getuser',{
+    let res = await axios.get(process.env.NEXT_PUBLIC_API_URL + '/auth/getuser',{
       headers: {'content-type': 'application/json'},
       withCredentials:true, 
     })
@@ -75,9 +75,6 @@ const page = () => {
       router.push('/myfiles')
   }
 
-  useEffect(()=>{
-    console.log(test,"testing")
-  },[loading])
 
   return (
     <div className='flex min-h-screen items-center justify-center w-full max-h-full p-24'>

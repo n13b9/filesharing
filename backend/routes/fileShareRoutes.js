@@ -25,18 +25,18 @@ const s3Client = new S3Client({
 
 
 router.get('/test', async (req,res)=>{
-    // let imageUrl = await getObjectURL('feynman.jpeg')
-    // console.log("working file")
+    let imageUrl = await getObjectURL('')
+    console.log("working file")
 
-    // res.send(
-    //       '<img src="' + imageUrl + '"/>'
-    //   );
+    res.send(
+          '<img src="' + imageUrl + '"/>'
+      );
 
 
-    let ToUploadUrl = await postObjectURL('myfile','');
-    res.json({
-        url:ToUploadUrl
-    })
+    // let ToUploadUrl = await postObjectURL('myfile','');
+    // res.json({
+    //     url:ToUploadUrl
+    // })
 
 })
 
@@ -91,7 +91,7 @@ router.get('/generatepostobjecturl',authTokenHandler,async(req,res,next)=>{
 
 router.post('/sharefile',authTokenHandler,async(req,res,next)=>{
     try {
-      const {receiveremail,filename,filekey,fileType} = req.body
+      const {receiveremail,filename,filekey} = req.body
       console.log(req.body,"showing");
       let senderUser = await User.findOne({_id:req.userId})
       let receiverUser = await User.findOne({email:receiveremail})
@@ -107,20 +107,18 @@ router.post('/sharefile',authTokenHandler,async(req,res,next)=>{
       senderUser.files.push({
         senderemail:senderUser.email,
         receiveremail,
-        filename:filename ? filename : new Date().toLocaleDateString,
+        filename:filename,
         // fileurl:req.body.fileurl,
         fileurl:filekey,
-        fileType:fileType,
-        shareAt:Date.now()
+        sharedAt:Date.now()
       })
 
       receiverUser.files.push({
         senderemail:senderUser.email,
         receiveremail,
-        filename:filename ? filename : new Date().toLocaleDateString,
+        filename:filename,
         fileurl:filekey,
-        fileType:fileType,
-        shareAt:Date.now()
+        sharedAt:Date.now()
       })
 
       await senderUser.save();
@@ -148,7 +146,23 @@ router.get('/getfiles',authTokenHandler,async(req,res)=>{
 })
 
 
+router.get('/gets3url/:key',async(req,res,next)=>{
+    try {
+      const {key} = req.params;
+      const signedUrl = await getObjectURL(key);
+
+      if(!signedUrl){
+        return responseFunction(res, 400, 'signed url not found', null, false);
+    }
+
+    return responseFunction(res, 200, 'signed url generated', {
+        signedUrl: signedUrl,
+    }, true);
+    } catch (error) {
+      console.log(error)
+    }
+})
+
 //share file 
-//detele file
 
 module.exports = router;

@@ -15,21 +15,22 @@ require('./models/userModel')
 require('./models/verificationModel');
 
 
-const PORT = 8000;
+const PORT = process.env.PORT_ID; 
 
 const app = express();
 const server = createServer(app);
 
 const io = new Server(server, { 
     cors:{
-        origin:'http://localhost:3000'
+        origin:process.env.FRONTEND_URL
+        // orgin:'http://localhost:3000'
     }
  });
  
 
 app.use(cors({
-    // origin: process.env.FRONTEND_URL,
-    origin:'http://localhost:3000',
+    origin: process.env.FRONTEND_URL,
+    // orgin:'http://localhost:3000',
     methods: ['GET', 'POST'],
     credentials: true // Allow credentials
 }));
@@ -76,6 +77,8 @@ app.use('/',(req,res)=>{
 //     })    
 
 //   });
+
+
   
 server.listen(PORT,()=>{
     console.log('server is running at' + PORT )

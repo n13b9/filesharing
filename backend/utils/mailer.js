@@ -1,14 +1,16 @@
 const nodemailer = require('nodemailer');
 
+
 async function sendMail(recerivermail,code){
 
     const transporter = nodemailer.createTransport({
-        host: "sandbox.smtp.mailtrap.io",
-        port: 465,
-        secure: false,
-        auth: {
-          user: "a23dfef7e67ece",
-          pass: "c51157e83cdbc4",
+          service: "Gmail",
+          host: "smtp.gmail.com",
+          port: 465,
+          secure: true,
+          auth: {
+            user: process.env.EMAIL,
+            pass: process.env.APP_PASSWORD,
         },
       });
 
@@ -17,7 +19,7 @@ async function sendMail(recerivermail,code){
         to: recerivermail,
         subject: "OTP for verification",
         text: "Your OTP is" + code,
-        html:"<b> Your OPT is" + code + "</b>"
+        html:"<b> Your OPT is  " + code + "</b>"
       };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -36,12 +38,13 @@ module.exports = sendMail;
 async function sendMails(recerivermail,filesenderemail){
 
   const transporter = nodemailer.createTransport({
-      host: "sandbox.smtp.mailtrap.io",
-      port: 465,
-      secure: false,
-      auth: {
-        user: "a23dfef7e67ece",
-        pass: "c51157e83cdbc4",
+        service: "Gmail",
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true,
+        auth: {
+          user: process.env.EMAIL,
+          pass: process.env.APP_PASSWORD,
       },
     });
 
@@ -49,8 +52,8 @@ async function sendMails(recerivermail,filesenderemail){
       from: "File share",
       to: recerivermail,
       subject: "new file",
-      text: "u received a mail from" + filesenderemail,
-      html:"<b> You received a file from" + filesenderemail + "</b>"
+      text: "u received a mail from  " + filesenderemail,
+      html:"<b> You received a file from   " + filesenderemail + "</b>"
     };
 
   transporter.sendMail(mailOptions, (error, info) => {

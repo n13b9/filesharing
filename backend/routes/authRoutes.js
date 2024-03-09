@@ -131,9 +131,9 @@ router.get('/checklogin',authTokenHandler, async(req,res,next)=>{
     })
 });
 
-router.post('/logout',authTokenHandler,async(req,res,next)=>{
+router.post('/logout',async(req,res,next)=>{
     res.clearCookie('authToken');
-    res.clearCookie('resfreshToken');
+    res.clearCookie('refreshToken');
     res.json({
         ok:true,
         message:'logout successful'

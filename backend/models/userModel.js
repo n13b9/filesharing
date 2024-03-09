@@ -7,8 +7,7 @@ const fileSchema = new mongoose.Schema({
     fileurl:{required:true,type:String},
     senderemail:{required:true,type:String},
     receiveremail:{required:true,type:String},
-    fileType:{type:String},
-    shareAt:{required:true,type:Date}
+    sharedAt:{required:true,type:Date}
 },{timestamps:true})
 
 const userSchema = new mongoose.Schema({

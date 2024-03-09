@@ -28,7 +28,7 @@ const page = () => {
   const handleOTP = async () => {
       setLoading(true);
     
-      await axios.post('http://localhost:8000/auth/sendotp',{
+      await axios.post(process.env.NEXT_PUBLIC_API_URL + '/auth/sendotp',{
         email:formData.email
       },
       {headers: {'content-type': 'application/json'},
@@ -59,7 +59,7 @@ const page = () => {
       return
     }
       
-    let res:any = await axios.post('http://localhost:8000/auth/register',{
+    let res:any = await axios.post(process.env.NEXT_PUBLIC_API_URL + '/auth/register',{
         name:formData.name,
         password:formData.password,
         otp:otp,

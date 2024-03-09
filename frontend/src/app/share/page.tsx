@@ -11,7 +11,7 @@ import { logIn,logOut } from '@/redux/features/authSlice';
 
 
 let socket:any = null;
-let apiurl:string = 'http://localhost:8000'
+//let apiurl:string = process.env.NEXT_PUBLIC_API_URL 
 
 
 const  page = () => {
@@ -32,41 +32,43 @@ const  page = () => {
     }, [])
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
 
+  useEffect(()=>{
+      {!auth.isAuth && router.push('/login')}
+    },[])
 
 
-  const handleShare = ()=>{
-    if(email=='' || file==null){
-        toast.error("email and file required")
-        return
-    }
+  // const handleShare = ()=>{
+  //   if(email=='' || file==null){
+  //       toast.error("email and file required")
+  //       return
+  //   }
 
-    let res = axios.post('http://localhost:8000/file/sharefile',{
-          receiveremail:email,
-          filename:filename,
-          clientfile:file,
-          fileurl:file.path
-    }, {headers: {'content-type': 'application/json'},
-        withCredentials:true
-        }, 
-          ).then(function (response:any) {
-            console.log(response);
-                  // socket.emit('uploaded',{
-                  //   from: auth.user.email,
-                  //   to: email,
-                  // })
-          })
-          .catch(function (error:any) {
-            console.log(error);
-          });
+  //   let res = axios.post('http://localhost:8000/file/sharefile',{
+  //         receiveremail:email,
+  //         filename:filename,
+  //         clientfile:file,
+  //         fileurl:file.path
+  //   }, {headers: {'content-type': 'application/json'},
+  //       withCredentials:true
+  //       }, 
+  //         ).then(function (response:any) {
+  //           console.log(response);
+  //                 // socket.emit('uploaded',{
+  //                 //   from: auth.user.email,
+  //                 //   to: email,
+  //                 // })
+  //         })
+  //         .catch(function (error:any) {
+  //           console.log(error);
+  //         });
 
 
-        router.push('/myfiles')
-    }
+  //       router.push('/myfiles')
+  //   }
 
   const uploadToS3Url = async (url:any)=>{
     const up = await axios.put(url,file
-      ,{headers: {'content-type': 'application/json'},
-        withCredentials:true})
+      ,{withCredentials:true})
         .then(function (response:any) {
           console.log(response);
         })
@@ -84,7 +86,7 @@ const  page = () => {
       let fileType='pdf';
       let filekey;
     
-    const resUrl:any = await axios.get('http://localhost:8000/file/generatepostobjecturl',
+    const resUrl:any = await axios.get(process.env.NEXT_PUBLIC_API_URL + '/file/generatepostobjecturl',
           {headers: {'content-type': 'application/json'},
             withCredentials:true
             },).then(function (response:any) {
@@ -99,10 +101,9 @@ const  page = () => {
               console.log(error);
             });
 
-          let res = axios.post('http://localhost:8000/file/sharefile',{
+          let res = axios.post(process.env.NEXT_PUBLIC_API_URL + '/file/sharefile',{
               receiveremail:email,
               filename:filename,
-              fileType,
               filekey:filekey
         }, {headers: {'content-type': 'application/json'},
             withCredentials:true
@@ -121,8 +122,8 @@ const  page = () => {
 
   
 
-    const [socketId, setSocketId] = useState<string>("")
-    socket = useMemo(() => io(apiurl), [])
+    // const [socketId, setSocketId] = useState<string>("")
+    // socket = useMemo(() => io(apiurl), [])
 
     // useEffect(() => {
     //     socket.on('connect', () => {
@@ -141,7 +142,7 @@ const  page = () => {
 
       const getUserData = async ()=>{
 
-        let res = await axios.get('http://localhost:8000/auth/getuser',{
+        let res = await axios.get(process.env.NEXT_PUBLIC_API_URL + '/auth/getuser',{
           headers: {'content-type': 'application/json'},
           withCredentials:true, 
         })
