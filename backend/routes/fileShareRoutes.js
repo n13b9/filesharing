@@ -65,7 +65,7 @@ const postObjectURL = async (filename,ct ) => {
   const params = {
       Bucket: process.env.AWS_BUCKET_NAME,
       Key: filename,
-      ContentType: ct,
+      ContentType:ct,
   }
   return await getSignedUrl(s3Client, new PutObjectCommand(params));
 }

@@ -20,17 +20,15 @@ const PORT = process.env.PORT_ID;
 const app = express();
 const server = createServer(app);
 
-const io = new Server(server, { 
-    cors:{
-        origin:process.env.FRONTEND_URL
-        // orgin:'http://localhost:3000'
-    }
- });
+// const io = new Server(server, { 
+//     cors:{
+//         origin:process.env.FRONTEND_URL
+//     }
+//  });
  
 
 app.use(cors({
     origin: process.env.FRONTEND_URL,
-    // orgin:'http://localhost:3000',
     methods: ['GET', 'POST'],
     credentials: true // Allow credentials
 }));
