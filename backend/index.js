@@ -19,7 +19,7 @@ const server = createServer(app);
 
 app.use(
   cors({
-    origin: "https://filesharing-two.vercel.app/",
+    origin: "https://filesharing-two.vercel.app",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
   })
