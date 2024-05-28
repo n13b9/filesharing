@@ -1,7 +1,5 @@
 const express = require("express");
 const http = require("http");
-const { Server } = require("socket.io");
-const sokcetIO = require("socket.io");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
@@ -19,12 +17,6 @@ const PORT = process.env.PORT_ID;
 const app = express();
 const server = createServer(app);
 
-// const io = new Server(server, {
-//     cors:{
-//         origin:process.env.FRONTEND_URL
-//     }
-//  });
-
 app.use(
   cors({
     origin: "https://filesharing-two.vercel.app/",
@@ -34,6 +26,7 @@ app.use(
 );
 
 app.use((req, res, next) => {
+  console.log("Request received:", req.method, req.url);
   res.header(
     "Access-Control-Allow-Origin",
     "https://filesharing-two.vercel.app/"
@@ -60,30 +53,6 @@ app.use("/file", fileShareRoutes);
 app.use("/", (req, res) => {
   res.send("API is working ....");
 });
-
-// io.on("connection", (socket) => {
-//     console.log('new connection',socket.id);
-
-//     socket.on('joinself',(data)=>{
-//         console.log("joined self",data)
-//     })
-//     socket.on('uploaded',(data)=>{
-//         console.log('uploaded',data)
-//     })
-
-//     socket.on('uploaded', (data) => {
-//                 let sender = data.from;
-//                 let receiver = data.to;
-
-//                 console.log('uploaded', data);
-
-//                 socket.to(receiver).emit('notify', {
-//                     from: sender,
-//                     message: 'New file shared'
-//                 })
-//     })
-
-//   });
 
 server.listen(PORT, () => {
   console.log("server is running at" + PORT);
